@@ -228,6 +228,95 @@ void multi_text(std::vector<textDisplay> text_values, unsigned int time = 0)
     std::cout << esc << "[" + linesAbove + "B";
 }
 
+
+
+class pBar {
+public:
+    void update(double newProgress) {
+        currentProgress += newProgress;
+        amountOfFiller = (int)((currentProgress / neededProgress) * (double)pBarLength);
+    }
+    void print() {
+        using namespace std;
+        currUpdateVal %= pBarUpdater.length();
+        cout << "\r" //Bring cursor to start of line
+            << firstPartOfpBar; //Print out first part of pBar
+        for (int a = 0; a < amountOfFiller; a++) { //Print out current progress
+            cout << pBarFiller;
+        }
+        cout << pBarUpdater[currUpdateVal];
+        for (int b = 0; b < pBarLength - amountOfFiller; b++) { //Print out spaces
+            cout << " ";
+        }
+        cout << lastPartOfpBar //Print out last part of progress bar
+            << " (" << (int)(100 * (currentProgress / neededProgress)) << "%)" //This just prints out the percent
+            << flush;
+        currUpdateVal += 1;
+    }
+    std::string firstPartOfpBar = "[", //Change these at will (that is why I made them public)
+        lastPartOfpBar = "]",
+        pBarFiller = "|",
+        pBarUpdater = "/-\\|";
+private:
+    int amountOfFiller,
+        pBarLength = 50, //I would recommend NOT changing this
+        currUpdateVal = 0; //Do not change
+    double currentProgress = 0, //Do not change
+        neededProgress = 100; //I would recommend NOT changing this
+};
+
+void progressBar(const unsigned int &time = 5000, const int& TotalBarLength = 50, const double& progressIncrement = 1, const int& NeededProgress = 100,
+    const std::vector<std::string>& Symbols = {"[", "]", "|", "/-\\|"})
+{
+    //User Defines
+    double newProgress = progressIncrement;
+
+	//Variables
+    int barLength = TotalBarLength, updateVal = 0, amountOfFiller;
+    double currentProgress = 0, neededProgress = NeededProgress;
+
+    //Symbols
+    std::string firstPartOfpBar = Symbols[0],
+        lastPartOfpBar = Symbols[1],
+        pBarFiller = Symbols[2],
+        pBarUpdater = Symbols[3];
+
+    auto update = [&]()
+    {
+        currentProgress += newProgress;
+        amountOfFiller = static_cast<int>((currentProgress / neededProgress) * static_cast<double>(barLength));
+    };
+
+    auto print = [&]()
+    {
+        updateVal %= pBarUpdater.length();
+        std::cout << "\r" << firstPartOfpBar;
+
+        for (int a = 0; a < amountOfFiller; a++) { 
+	        std::cout << pBarFiller;
+        }
+
+        std::cout << (currentProgress != NeededProgress ? pBarUpdater[updateVal] : pBarFiller[0]);
+
+        for (int b = 0; b < barLength - amountOfFiller; b++) { 
+	        std::cout << " ";
+        }
+        std::cout << lastPartOfpBar 
+            << " (" << static_cast<int>(100 * (currentProgress / neededProgress)) << "%)" 
+            << std::flush;
+        updateVal += 1;
+    };
+
+    const float sleepTime = time / NeededProgress;
+
+    for (int i = 0; i < 100; i++)
+    {
+        update();
+        print();
+        MY_SLEEP(sleepTime);
+    }
+}
+
 int main() {
 
 
@@ -256,13 +345,14 @@ int main() {
 
 
 
-    type_text("Lorem ipsum dolor sit amet", 750, { "red", "bold", "underline", "strikethrough"});
+    //type_text("Lorem ipsum dolor sit amet", 750, { "red", "bold", "underline", "strikethrough"});
     newl
-    multi_text({ display1,display2,display3 }, 950);
+    //multi_text({ display1,display2,display3 }, 950);
     newl
-	multi_text(createDisplay(long_display, longString, {"green"}), 950);
+	//multi_text(createDisplay(long_display, longString, {"green"}), 950);
     newl
-	std::cout << "Tests have Finished!";
-
+	//std::cout << "Tests have Finished!";
+    newl
+	progressBar(5000, 50, 1,200);
     
 }
