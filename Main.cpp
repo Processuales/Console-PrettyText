@@ -54,8 +54,7 @@ void console_print(const char& text, const std::string& fullcode = "")
     {
 	    std::cout << text << std::flush;
     }
-    
-};
+}
 
 void type_text(const std::string & text, unsigned int time = 0,
     const std::vector<std::string>& params = {}) {
@@ -151,28 +150,20 @@ unsigned int make_same_size(std::vector<textDisplay> &text_values)
     return longest_text;
 }
 
-std::vector<textDisplay> createDisplay(const textDisplay& display_main, const char* longString, std::vector<std::string> params = {}) {
+std::vector<textDisplay> createDisplay(const char* longString, std::vector<std::string> params = {}) {
     if (std::strlen(longString) == 0) return {};
 
     std::vector<textDisplay> resultDisplays;
     std::stringstream ss(longString);
     std::string line;
+    
 
-    size_t index = 0;
+    
     while (std::getline(ss, line, '\n')) {
-        if (index < 1) {
-            textDisplay display = display_main;
-            display.text = line;
-            display.params = params;
-            resultDisplays.push_back(display);
-        }
-        else {
-            textDisplay display;
-            display.text = line;
-            display.params = params;
-            resultDisplays.push_back(display);
-        }
-        index++;
+    	textDisplay display;
+    	display.text = line;
+    	display.params = params;
+    	resultDisplays.push_back(display);
     }
 
 
@@ -265,7 +256,7 @@ private:
         neededProgress = 100; //I would recommend NOT changing this
 };
 
-void progressBar(const unsigned int &time = 5000, const int& TotalBarLength = 50, const double& progressIncrement = 1, const int& NeededProgress = 100,
+void progressBar(const unsigned int &time = 5000, const int& TotalBarLength = 50, const int& NeededProgress = 100, const double& progressIncrement = 1,
     const std::vector<std::string>& Symbols = {"[", "]", "|", "/-\\|"})
 {
     //User Defines
@@ -273,7 +264,7 @@ void progressBar(const unsigned int &time = 5000, const int& TotalBarLength = 50
 
 	//Variables
     int barLength = TotalBarLength, updateVal = 0, amountOfFiller;
-    double currentProgress = 0, neededProgress = NeededProgress;
+    double currentProgress = 0, neededProgress = 10000/NeededProgress;
 
     //Symbols
     std::string firstPartOfpBar = Symbols[0],
@@ -345,14 +336,14 @@ int main() {
 
 
 
-    //type_text("Lorem ipsum dolor sit amet", 750, { "red", "bold", "underline", "strikethrough"});
+    type_text("Lorem ipsum dolor sit amet", 750, { "red", "bold", "underline", "strikethrough"});
     newl
-    //multi_text({ display1,display2,display3 }, 950);
+    multi_text({ display1,display2,display3 }, 950);
     newl
-	//multi_text(createDisplay(long_display, longString, {"green"}), 950);
+	multi_text(createDisplay(longString, {"green"}), 950);
     newl
-	//std::cout << "Tests have Finished!";
-    newl
-	progressBar(5000, 50, 1,200);
+	progressBar(5000, 50, 100, 1);
+
+
     
 }
